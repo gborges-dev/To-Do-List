@@ -7,8 +7,8 @@ const ContentListToDo = (props: IListProps) => {
 
     return (
         <List sx={{ width: "100%" }}>
-          {listaTarefas.map((tarefa, index) => (
-            <ListItem key={index}>
+          {listaTarefas.map((tarefa) => (
+            <ListItem key={tarefa.id}>
               <Checkbox
                 id={tarefa.id}
                 checked={tarefa.concluida}
@@ -18,8 +18,8 @@ const ContentListToDo = (props: IListProps) => {
                 sx={{ textDecoration: tarefa.concluida ? "line-through" : "none" }}
                 primary={tarefa.descricao}
               />
-              <IconButton onClick={handleClickDelete} id={tarefa.id}>
-                <Delete color="error" id={tarefa.id}/>
+              <IconButton onClick={() => handleClickDelete(tarefa.id)}>
+                <Delete color="error"/>
               </IconButton>
             </ListItem>
           ))}
