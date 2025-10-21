@@ -15,39 +15,33 @@ import type { ITarefa } from "./Interface";
 import ContentListToDo from "./Content";
 import { useThemeContext } from "../../context";
 import { DarkMode, LightMode } from "@mui/icons-material";
+import useToDo from "./hooks";
 
 const ToDoList = () => {
-  const [descTarefa, setDescTarefa] = useState<string>("");
-  const [listaTarefas, setListaTarefas] = useState<ITarefa[]>([]);
-  
-  const handleClickAdicionarTarefa = () => {
-    descTarefa ? setListaTarefas(prevListaTarefas => [...prevListaTarefas, { descricao: descTarefa, concluida: false, id:crypto.randomUUID() }]) : null;
-    setDescTarefa("")
-  };
-
-  const handleClickCheckbox = (params: any) => {
-    setListaTarefas(prevListaTarefas => prevListaTarefas.map(tarefa => tarefa.id === params.target.id ? { ...tarefa, concluida: !tarefa.concluida } : tarefa))
-  };
-
-  const handleClickDelete = (codigoTarefa: string) => {
-    setListaTarefas(prevListaTarefas => prevListaTarefas.filter(tarefa => tarefa.id !== codigoTarefa))
-  };
-
-  const contadorDeTarefasPendentes = useMemo(() => listaTarefas.filter(tarefa => !tarefa.concluida).length, [listaTarefas]);
+  const {
+    descTarefa,
+    setDescTarefa,
+    listaTarefas,
+    addTarefa,
+    toggleCheckbox,
+    deleteTarefa,
+    contadorDeTarefasPendentes,
+  } = useToDo();
 
   const { mode, toggleTheme } = useThemeContext();
 
   return (
     <Card sx={{ minWidth: 345, padding: 12, maxHeight: 600, overflow: "auto" }}>
-      <CardHeader sx={{ textAlign: "center" }} 
-        title="Minhas tarefas" 
+      <CardHeader
+        sx={{ textAlign: "center" }}
+        title="Minhas tarefas"
         subheader="Organize suas tarefas diárias"
         action={
           <IconButton onClick={toggleTheme}>
             {mode === "light" ? <DarkMode /> : <LightMode />}
           </IconButton>
         }
-        />
+      />
       <CardContent
         sx={{
           display: "flex",
@@ -66,11 +60,13 @@ const ToDoList = () => {
           <OutlinedInput
             id="outlined-adornment-addtask"
             value={descTarefa}
-            onKeyDown={(e) => e.key === "Enter" ? handleClickAdicionarTarefa() : null}
+            onKeyDown={(e) =>
+              e.key === "Enter" ? addTarefa() : null
+            }
             onChange={(e) => setDescTarefa(e.target.value)}
             endAdornment={
               <InputAdornment position="end">
-                <IconButton onClick={handleClickAdicionarTarefa} edge="end">
+                <IconButton onClick={addTarefa} edge="end">
                   <AddCircleOutlineIcon />
                 </IconButton>
               </InputAdornment>
@@ -78,7 +74,11 @@ const ToDoList = () => {
             label="Adicionar tarefa"
           />
         </FormControl>
-        <ContentListToDo listaTarefas={listaTarefas} handleClickCheckbox={handleClickCheckbox} handleClickDelete={handleClickDelete} />
+        <ContentListToDo
+          listaTarefas={listaTarefas}
+          handleClickCheckbox={toggleCheckbox}
+          handleClickDelete={deleteTarefa}
+        />
       </CardContent>
     </Card>
   );
