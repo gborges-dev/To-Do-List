@@ -3,30 +3,30 @@ import {
   Card,
   CardContent,
   CardHeader,
-  FormControl,
   IconButton,
-  InputAdornment,
-  InputLabel,
-  OutlinedInput,
   Typography,
 } from "@mui/material";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import type { ITarefa } from "./Interface";
 import ContentListToDo from "./Content";
 import { useThemeContext } from "../../context";
 import { DarkMode, LightMode } from "@mui/icons-material";
-import useToDo from "./hooks";
+import useToDo from "./hooks/useTodo";
+import { useForm } from "react-hook-form";
+import type { ITarefa } from "./Interface";
+import Formulario from "./Components/Formulario";
+import { yupResolver } from "@hookform/resolvers/yup";
+import validationSchemaTarefa from "./validations/ValidationSchemaTarefa";
 
 const ToDoList = () => {
+  const form = useForm({
+    resolver: yupResolver(validationSchemaTarefa),
+  });
+
   const {
-    descTarefa,
-    setDescTarefa,
     listaTarefas,
-    addTarefa,
     toggleCheckbox,
     deleteTarefa,
     contadorDeTarefasPendentes,
-  } = useToDo();
+  } = useToDo({form});
 
   const { mode, toggleTheme } = useThemeContext();
 
@@ -53,27 +53,9 @@ const ToDoList = () => {
         <Typography variant="body2" color="text.secondary">
           {contadorDeTarefasPendentes} tarefas pendentes
         </Typography>
-        <FormControl variant="outlined">
-          <InputLabel htmlFor="outlined-adornment-addtask">
-            Adicionar tarefa
-          </InputLabel>
-          <OutlinedInput
-            id="outlined-adornment-addtask"
-            value={descTarefa}
-            onKeyDown={(e) =>
-              e.key === "Enter" ? addTarefa() : null
-            }
-            onChange={(e) => setDescTarefa(e.target.value)}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton onClick={addTarefa} edge="end">
-                  <AddCircleOutlineIcon />
-                </IconButton>
-              </InputAdornment>
-            }
-            label="Adicionar tarefa"
-          />
-        </FormControl>
+        
+        <Formulario form={form} />
+
         <ContentListToDo
           listaTarefas={listaTarefas}
           handleClickCheckbox={toggleCheckbox}

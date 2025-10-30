@@ -1,5 +1,6 @@
 export interface ITarefa {
     descricao: string;
+    urgencia: number;
     concluida: boolean;
     id: string;
 }
