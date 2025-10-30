@@ -13,7 +13,6 @@ const useToDo = (props: IUseToDoProps) => {
   const urgenciaTarefa = form.watch("urgencia");
 
   const addTarefa = () => {
-    debugger;
     descTarefa
       ? setListaTarefas((prevListaTarefas) => [
           ...prevListaTarefas,
